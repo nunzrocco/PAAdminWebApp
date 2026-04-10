@@ -1,12 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Separator } from '@radix-ui/react-separator';
 
-interface UserMenuProps {
-    userImageUrl?: string;
-    userName?: string;
-}
-const UserMenu = (props: UserMenuProps) => {
+const UserMenu = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -21,6 +17,10 @@ const UserMenu = (props: UserMenuProps) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    const handleLogout = () => {
+        
+    }
 
     return (
         <div className="relative inline-block text-left" ref={menuRef}>

@@ -15,7 +15,6 @@ export const LoginForm = () => {
     const {
         register, 
         handleSubmit,
-        formState: { errors }
     } = useForm<LoginFormInputs>();
 
     const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {

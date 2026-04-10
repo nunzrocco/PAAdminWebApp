@@ -1,42 +1,47 @@
-interface SidebarItemProps {
-    text: string,
-    active: boolean,
-    onClick?: () => {}
+// components/sidebar/SidebarItem.tsx
+import type { MenuItem } from "@/features/auth/navigation/menu.config"
+import { Link, useMatchRoute } from "@tanstack/react-router"
+
+type Props = {
+  item: MenuItem
 }
 
-export const SidebarItem = ({ text, active, onClick }: SidebarItemProps) => {
-    let classes = 'w-full text-right px-4 py-2 rounded-l-md transition-colors duration-300 ease-in-out'
+export function SidebarItem({ item }: Props) {
 
-    if (active) {
-        classes += " bg-stone-100 text-stone-900"
-    }
-    else {
-        classes += " cursor-pointer hover:bg-stone-700 my-2"
-    }
+    const matchRoute = useMatchRoute()
 
-    console.log(classes)
+    const isActive = item.to
+    ? matchRoute({ to: item.to, fuzzy: false })
+    : false
 
-    return (<li className="pl-2">
-        {
-            active && (
-                <div className="bg-stone-100">
-                    <div className="bg-stone-800 h-2 rounded-br-md">
+  return (
+    <div className="mb-1">
+      {item.to ? (
+        <Link
+          to={item.to}
+          className={`block px-6 py-2 rounded-lg hover:bg-stone-200 hover:text-stone-800 hover:scale-105 transition-all ease-in-out duration-300 ${
+            isActive ? "bg-stone-600 text-white" : ""
+          }`}
+        >
+          {item.label}
+        </Link>
+      ) : (
+        <div className="px-6 py-2 text-xs font-light text-stone-300">
+          {item.label}
+        </div>
+      )}
 
-                    </div>
-                </div>
-            )
-        }
-        <button type="button" onClick={onClick} className={`${classes}`}>
-            {text}
-        </button>
-        {
-            active && (
-                <div className="bg-stone-100">
-                    <div className="bg-stone-800 h-2 rounded-tr-md">
-
-                    </div>
-                </div>
-            )
-        }
-    </li>)
+      {item.children && (
+        <div>
+          {item.children.map((child) => (
+            <SidebarItem
+              key={child.label}
+              item={child}
+            />
+          ))}
+        </div>
+      )}
+      
+    </div>
+  )
 }

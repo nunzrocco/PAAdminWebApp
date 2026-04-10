@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent, CardTitle, CardAction } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { SummaryItem } from "@/components/ui/summary-item";
-import { Table } from "@/components/ui/table";
 import { Separator } from "@radix-ui/react-separator";
 
-export const Partners = () => {
+export const PartnersDashboardPage = () => {
     return (
         <>
             <div className="grid grid-cols-2 gap-4">

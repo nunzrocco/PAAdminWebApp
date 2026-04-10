@@ -1,20 +1,22 @@
 import { create } from 'zustand';
 
-type UserRole = "SUPER_ADMIN" | "SALES" | "ADMIN";
+export type UserRole = "SUPER_ADMIN" | "SALES" | "ADMIN";
 
 type User = {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
-  role: UserRole;
+  roles: UserRole[];
 }
 type AuthState = {
   accessToken: string | null
   user: User | null;
   isAuthenticated: boolean
+  isInitializing: boolean
   setAuth: (token: string, user: User) => void
   setToken: (token: string) => void
+  setInitializing: (isInitializing: boolean) => void
   logout: () => void
 }
 
@@ -22,6 +24,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   accessToken: null,
   user: null,
   isAuthenticated: false,
+  isInitializing: false,
 
   setAuth: (token, user) =>
     set({
@@ -32,6 +35,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   setToken: (token) => 
     set({
       accessToken: token
+    }),
+  setInitializing: (isInitializing) =>
+    set({
+      isInitializing,
     }),
   logout: () =>
     set({

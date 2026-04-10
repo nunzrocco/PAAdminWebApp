@@ -3,7 +3,21 @@
 import type { NavItem } from "../types/navItem";
 
 export const MASTER_NAVIGATION: NavItem[] = [
-    { label: 'Dashboard', href: '/dashboard', key: 'dashboard' },
-    { label: 'Socios', href: '/partners', key: 'partners' },
-    { label: 'Jugadores', href: '/players', key: 'players' },
-];
+  {
+    key: 'dashboard',
+    label: 'Inicio',
+    active: true,
+    children: [
+      { key: 'dashboard', label: 'Dashboard', href: '/dashboard' },
+    ]
+  },
+  {
+    key: 'partners',
+    label: 'Socios',
+    active: false,
+    children: [
+      { key: 'dashboard', label: 'Dashboard', href: '/partners/dashboard' },
+      { key: 'franchise-group', label: 'Franquicias', href: '/partners/franchise-group' },
+    ],
+  },
+]; 

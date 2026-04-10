@@ -16,54 +16,42 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-let isRefreshing = false
-let queue: any[] = []
-
 api.interceptors.response.use(
-  (response) => response,
+  (response) => response, // Si la respuesta es OK, solo la retorna
   async (error) => {
-    const originalRequest = error.config
+    const originalRequest = error.config;
+    const { logout, setAuth } = useAuthStore.getState();
 
+    // Si el error es 401 y no hemos intentado refrescar aún
     if (error.response?.status === 401 && !originalRequest._retry) {
-      if (isRefreshing) {
-        return new Promise((resolve) => {
-          queue.push((token: string) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`
-            resolve(api(originalRequest))
-          })
-        })
-      }
-
-      originalRequest._retry = true
-      isRefreshing = true
+      originalRequest._retry = true;
 
       try {
+        // Intentamos obtener nuevos tokens
         const res = await axios.post(
-          '/auth/refresh',
+          'http://localhost:3019/api/auth/refresh',
           {},
           { withCredentials: true }
-        )
+        );
 
-        const newToken = res.data.accessToken
+        const { user, accessToken } = res.data;
+        
+        // Actualizamos Zustand
+        setAuth(user, accessToken);
 
-        useAuthStore.getState().setToken(newToken)
-
-        queue.forEach((cb) => cb(newToken))
-        queue = []
-
-        return api(originalRequest)
-      } catch (err) {
-        useAuthStore.getState().logout()
-        window.location.href = '/login'
-        return Promise.reject(err)
-      } finally {
-        isRefreshing = false
+        // Actualizamos el header de la petición original y reintentamos
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        return api(originalRequest);
+      } catch (refreshError) {
+        // Si el refresh falla (ej. cookie expirada), cerramos sesión
+        logout();
+        return Promise.reject(refreshError);
       }
     }
 
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
 export {
     api

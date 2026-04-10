@@ -11,5 +11,5 @@ export const login = async (email: string, password: string): Promise<loginRespo
 }
 
 export const logout = async () => {
-    const res = await api.post("/auth/logout");
+    await api.post("/auth/logout");
 }
